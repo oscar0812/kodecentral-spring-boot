@@ -32,7 +32,7 @@ public class User {
     @Length(min = 1, message = "username can not be blank")
     private String username;
 
-    @Column(name = "email", nullable = false, length = 128)
+    @Column(name = "email", nullable = false, length = 128, unique = true)
     @NotNull(message = "email is required")
     @Length(min = 1, message = "email can not be blank")
     @Email(message = "Email must be a well-formed email address")
