@@ -23,6 +23,10 @@ public class Library {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "slug", nullable = false, unique = true)
+    private String slug;
+
     @Column(name = "name", nullable = false, length = 128)
     private String name;
 

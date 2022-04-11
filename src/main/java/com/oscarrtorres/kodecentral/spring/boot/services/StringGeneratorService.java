@@ -15,9 +15,12 @@ public class StringGeneratorService {
     }
 
     public String generateSlug(String fromThis) {
-        String randomString = new Random().ints(97, 122 + 1) // 97 (a) -> 122 (z)
-                .limit(16) // string length
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+        Random random = new Random();
+        String randomString = random.ints(48, 123)
+                .filter(num -> num <= 57 || num >= 97) // 0 (48) -> 9 (57), a (97) -> 122 (z)
+                .limit(8)
+                .mapToObj(c -> (char) c)
+                .collect(StringBuffer::new, StringBuffer::append, StringBuffer::append)
                 .toString();
 
         return slugify.slugify(fromThis + " " + randomString);

@@ -22,10 +22,4 @@ public class UserRestController {
     public List<User> findAll() {
         return userService.findAll();
     }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public User save(@RequestBody @Valid User user) {
-        return userService.save(user);
-    }
 }

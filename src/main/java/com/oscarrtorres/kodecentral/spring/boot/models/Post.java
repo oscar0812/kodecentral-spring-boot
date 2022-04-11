@@ -4,6 +4,7 @@ package com.oscarrtorres.kodecentral.spring.boot.models;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -41,6 +42,7 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "posted_by_user_id", nullable = false)
     @ToString.Exclude
+    @CreatedBy
     private User postedByUser;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
