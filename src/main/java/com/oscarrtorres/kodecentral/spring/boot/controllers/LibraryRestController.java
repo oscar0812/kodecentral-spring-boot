@@ -1,10 +1,9 @@
 package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Library;
-import com.oscarrtorres.kodecentral.spring.boot.models.Post;
 import com.oscarrtorres.kodecentral.spring.boot.services.LibraryService;
-import com.oscarrtorres.kodecentral.spring.boot.services.PostService;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

@@ -31,10 +31,20 @@ public class ErrorResponse {
         this.status = httpStatus.name();
     }
 
-    public ErrorResponse(HttpStatus httpStatus, String error, List<Exception> causeStackTrace) {
+    public ErrorResponse(HttpStatus httpStatus, List<Exception> causeStackTrace) {
         this(httpStatus);
-        this.errors.add(error);
         // skip the first element 1->N to avoid putting the error message twice
         this.causeStackTrace = causeStackTrace.stream().map(Throwable::getMessage).skip(1).toList();
+    }
+
+    public ErrorResponse(HttpStatus httpStatus, String error, List<Exception> causeStackTrace) {
+        this(httpStatus, causeStackTrace);
+        this.errors.add(error);
+    }
+
+    public ErrorResponse(HttpStatus httpStatus, List<String> errors, List<Exception> causeStackTrace) {
+        this(httpStatus, causeStackTrace);
+        this.errors = errors;
+
     }
 }

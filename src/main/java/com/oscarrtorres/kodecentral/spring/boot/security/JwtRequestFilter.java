@@ -18,12 +18,13 @@ import java.io.IOException;
 // filter that will intercept every request once and examine the header
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
+    private final MyUserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private MyUserDetailsService userDetailsService;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    public JwtRequestFilter(MyUserDetailsService userDetailsService, JwtUtil jwtUtil) {
+        this.userDetailsService = userDetailsService;
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

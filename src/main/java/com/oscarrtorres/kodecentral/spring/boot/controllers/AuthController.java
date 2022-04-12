@@ -5,7 +5,6 @@ import com.oscarrtorres.kodecentral.spring.boot.models.AuthenticationResponse;
 import com.oscarrtorres.kodecentral.spring.boot.models.User;
 import com.oscarrtorres.kodecentral.spring.boot.security.JwtUtil;
 import com.oscarrtorres.kodecentral.spring.boot.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,22 +19,17 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("${spring.data.rest.basePath}/auth")
 public class AuthController {
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
-    public AuthController(UserService userService) {
+    public AuthController(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder, UserService userService) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
         this.userService = userService;
     }
 

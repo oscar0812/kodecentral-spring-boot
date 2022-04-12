@@ -25,7 +25,6 @@ public class Post {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "slug")
     private String slug;
 
