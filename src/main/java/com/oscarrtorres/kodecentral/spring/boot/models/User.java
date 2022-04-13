@@ -1,6 +1,9 @@
 package com.oscarrtorres.kodecentral.spring.boot.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -59,23 +62,23 @@ public class User {
     @Column(name = "reset_key", nullable = false, length = 32)
     private String resetKey = "";
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_favorite",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id"))
     @ToString.Exclude
     private Set<Post> favoritePosts = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "postedByUser")
+    @OneToMany(mappedBy = "postedByUser", fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<Post> posts = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "createdByUser")
+    @OneToMany(mappedBy = "createdByUser", fetch = FetchType.LAZY)
     @ToString.Exclude
-    @JsonManagedReference
+    @JsonIgnore
     private Set<Library> libraries = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "createdByUser")
+    @OneToMany(mappedBy = "createdByUser", fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<Comment> comments = new LinkedHashSet<>();
 

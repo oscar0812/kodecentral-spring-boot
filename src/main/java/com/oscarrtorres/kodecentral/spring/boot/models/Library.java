@@ -1,6 +1,6 @@
 package com.oscarrtorres.kodecentral.spring.boot.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -44,8 +44,8 @@ public class Library {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by_user_id", nullable = false)
     @ToString.Exclude
+    @JsonIgnore
     @CreatedBy
-    @JsonBackReference
     private User createdByUser;
 
     @CreationTimestamp

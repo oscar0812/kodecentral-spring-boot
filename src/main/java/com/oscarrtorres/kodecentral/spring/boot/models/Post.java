@@ -1,13 +1,18 @@
 package com.oscarrtorres.kodecentral.spring.boot.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -27,22 +32,24 @@ public class Post {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "slug")
+    @Column(name = "slug", nullable = false)
     private String slug;
 
     @Column(name = "title", nullable = false, length = 128)
+    @NotNull(message = "title is required")
+    @Length(min = 1, message = "title can not be blank")
     private String title;
 
     @Lob
     @Column(name = "text", nullable = false)
+    @NotNull(message = "text is required")
+    @Length(min = 1, message = "text can not be blank")
     private String text;
-
-    @Column(name = "posted_date", nullable = false)
-    private Instant postedDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "posted_by_user_id", nullable = false)
     @ToString.Exclude
+    @JsonIgnore
     @CreatedBy
     private User postedByUser;
 
@@ -50,9 +57,6 @@ public class Post {
     @JoinColumn(name = "library_id", nullable = false)
     @ToString.Exclude
     private Library parentLibrary;
-
-    @Column(name = "library_index", nullable = false)
-    private Integer libraryIndex;
 
     @ManyToMany
     @JoinTable(name = "user_favorite",
@@ -64,6 +68,14 @@ public class Post {
     @OneToMany(mappedBy = "post")
     @ToString.Exclude
     private Set<Comment> comments = new LinkedHashSet<>();
+
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "previous_post_id")
+    private Post previousPost;
+
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "next_post_id")
+    private Post nextPost;
 
     @CreationTimestamp
     @Column(name = "created_at")
