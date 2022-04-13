@@ -56,6 +56,7 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "library_id", nullable = false)
     @ToString.Exclude
+    @JsonIgnore
     private Library parentLibrary;
 
     @ManyToMany
@@ -65,7 +66,7 @@ public class Post {
     @ToString.Exclude
     private Set<User> favoriteUsers = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "parentPost")
     @ToString.Exclude
     private Set<Comment> comments = new LinkedHashSet<>();
 

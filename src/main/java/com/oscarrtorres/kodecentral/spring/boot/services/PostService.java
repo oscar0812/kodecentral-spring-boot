@@ -2,7 +2,6 @@ package com.oscarrtorres.kodecentral.spring.boot.services;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Post;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.PostRepository;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

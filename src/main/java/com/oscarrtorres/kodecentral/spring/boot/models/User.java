@@ -66,11 +66,13 @@ public class User {
     @JoinTable(name = "user_favorite",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id"))
+    @JsonIgnore
     @ToString.Exclude
     private Set<Post> favoritePosts = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "postedByUser", fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JsonIgnore
     private Set<Post> posts = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "createdByUser", fetch = FetchType.LAZY)
@@ -80,6 +82,7 @@ public class User {
 
     @OneToMany(mappedBy = "createdByUser", fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JsonIgnore
     private Set<Comment> comments = new LinkedHashSet<>();
 
     @CreationTimestamp
