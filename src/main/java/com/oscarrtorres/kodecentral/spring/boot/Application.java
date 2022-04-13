@@ -8,35 +8,26 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
-
 public class Application {
 
 	@Bean
 	public AuditorAware<User> auditorAware(){
-		return new AuditorAware<User>() {
-			@Override
-			public Optional<User> getCurrentAuditor() {
-				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-				if (authentication == null ||
-						!authentication.isAuthenticated() ||
-						authentication instanceof AnonymousAuthenticationToken) {
-					return Optional.empty();
-				}
+		return () -> {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-				MyUserPrincipal myUserPrincipal = (MyUserPrincipal) authentication.getPrincipal();
-
-				return Optional.ofNullable(myUserPrincipal.getUser());
+			if (authentication == null || !authentication.isAuthenticated()) {
+				return Optional.empty();
 			}
+
+			return Optional.ofNullable(((MyUserPrincipal) authentication.getPrincipal()).getUser());
 		};
 	}
 
