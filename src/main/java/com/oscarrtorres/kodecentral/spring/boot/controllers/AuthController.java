@@ -1,8 +1,9 @@
 package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
 import com.oscarrtorres.kodecentral.spring.boot.dtos.LoginUserDTO;
-import com.oscarrtorres.kodecentral.spring.boot.models.AuthenticationResponse;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.AuthenticationResponse;
 import com.oscarrtorres.kodecentral.spring.boot.models.User;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.UserResponse;
 import com.oscarrtorres.kodecentral.spring.boot.security.JwtUtil;
 import com.oscarrtorres.kodecentral.spring.boot.services.UserService;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody @Valid User user) {
+    public UserResponse register(@RequestBody @Valid User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return this.userService.save(user);
     }

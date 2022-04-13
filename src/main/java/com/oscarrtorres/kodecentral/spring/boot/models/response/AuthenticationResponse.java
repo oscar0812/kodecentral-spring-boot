@@ -1,4 +1,4 @@
-package com.oscarrtorres.kodecentral.spring.boot.models;
+package com.oscarrtorres.kodecentral.spring.boot.models.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

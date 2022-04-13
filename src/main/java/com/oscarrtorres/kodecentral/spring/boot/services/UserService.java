@@ -2,6 +2,7 @@ package com.oscarrtorres.kodecentral.spring.boot.services;
 
 import com.oscarrtorres.kodecentral.spring.boot.exceptions.AlreadyExistsException;
 import com.oscarrtorres.kodecentral.spring.boot.models.User;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.UserResponse;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +16,14 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserResponse> findAll() {
+        return userRepository.findAll().stream().map(UserResponse::new).toList();
     }
 
-    public User save(User user) throws AlreadyExistsException {
+    public UserResponse save(User user) throws AlreadyExistsException {
         userRepository.findByEmail(user.getEmail()).ifPresent(p -> {throw new AlreadyExistsException("Email already exists");});
         userRepository.findByUsername(user.getUsername()).ifPresent(p -> {throw new AlreadyExistsException("Username already exists");});
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return new UserResponse(savedUser);
     }
 }

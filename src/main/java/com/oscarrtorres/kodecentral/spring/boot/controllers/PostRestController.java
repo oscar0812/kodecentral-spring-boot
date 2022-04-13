@@ -1,6 +1,7 @@
 package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Post;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.PostResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +19,13 @@ public class PostRestController {
     }
 
     @GetMapping
-    public List<Post> findAll() {
+    public List<PostResponse> findAll() {
         return postService.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Post save(@RequestBody @Valid Post post) {
+    public PostResponse save(@RequestBody @Valid Post post) {
         return postService.save(post);
     }
 }

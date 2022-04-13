@@ -1,6 +1,8 @@
 package com.oscarrtorres.kodecentral.spring.boot.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,7 +35,6 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
-    @JsonIgnore
     @CreatedBy
     private User createdByUser;
 
@@ -41,7 +42,6 @@ public class Comment {
     @JoinColumn(name = "post_id", nullable = false)
     @NotNull(message = "parentPost is required")
     @ToString.Exclude
-    @JsonIgnore
     private Post parentPost;
 
     @CreationTimestamp
