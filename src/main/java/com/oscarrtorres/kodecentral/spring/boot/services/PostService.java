@@ -10,9 +10,11 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final StringGeneratorService stringGeneratorService;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, StringGeneratorService stringGeneratorService) {
         this.postRepository = postRepository;
+        this.stringGeneratorService = stringGeneratorService;
     }
 
     public List<Post> findAll() {
@@ -20,6 +22,7 @@ public class PostService {
     }
 
     public Post save(Post post) {
+        post.setSlug(stringGeneratorService.generateSlug(post.getTitle()));
         return postRepository.save(post);
     }
 
