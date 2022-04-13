@@ -1,8 +1,10 @@
 package com.oscarrtorres.kodecentral.spring.boot.dtos;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -11,11 +13,11 @@ import javax.validation.constraints.NotNull;
 @Setter
 @ToString
 public class LoginUserDTO {
-    @NotNull
-    @NotBlank
+
+    @NotNull(message = "username is required")
+    @Length(min = 1, message = "username can not be blank")
     private String username;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "password is required")
     private String password;
 }
