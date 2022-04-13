@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -18,6 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "post")
 public class Post {
     @Id
@@ -47,7 +49,7 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "library_id", nullable = false)
     @ToString.Exclude
-    private Library library;
+    private Library parentLibrary;
 
     @Column(name = "library_index", nullable = false)
     private Integer libraryIndex;
@@ -57,7 +59,7 @@ public class Post {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @ToString.Exclude
-    private Set<User> users = new LinkedHashSet<>();
+    private Set<User> favoriteUsers = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "post")
     @ToString.Exclude

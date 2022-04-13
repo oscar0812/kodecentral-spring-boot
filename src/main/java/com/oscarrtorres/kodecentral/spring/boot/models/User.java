@@ -1,5 +1,6 @@
 package com.oscarrtorres.kodecentral.spring.boot.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -69,7 +70,12 @@ public class User {
     @ToString.Exclude
     private Set<Post> posts = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "createdByUser")
+    @ToString.Exclude
+    @JsonManagedReference
+    private Set<Library> libraries = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "createdByUser")
     @ToString.Exclude
     private Set<Comment> comments = new LinkedHashSet<>();
 

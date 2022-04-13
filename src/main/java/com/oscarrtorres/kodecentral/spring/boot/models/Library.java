@@ -1,9 +1,12 @@
 package com.oscarrtorres.kodecentral.spring.boot.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,6 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "library")
 public class Library {
     @Id
@@ -29,13 +33,20 @@ public class Library {
     private String slug;
 
     @Column(name = "name", nullable = false, length = 128)
-    @NotNull(message = "Name is required")
-    @Length(min = 1, message = "Name can not be blank")
+    @NotNull(message = "name is required")
+    @Length(min = 1, message = "name can not be blank")
     private String name;
 
-    @OneToMany(mappedBy = "library", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parentLibrary", fetch = FetchType.LAZY)
     @ToString.Exclude
-    private Set<Post> posts = new LinkedHashSet<>();
+    private Set<Post> childPosts = new LinkedHashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "created_by_user_id", nullable = false)
+    @ToString.Exclude
+    @CreatedBy
+    @JsonBackReference
+    private User createdByUser;
 
     @CreationTimestamp
     @Column(name = "created_at")
