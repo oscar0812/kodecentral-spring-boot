@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface LibraryRepository extends CrudRepository<Library, Long> {
     List<Library> findAll();
+
+    Library findBySlug(String librarySlug);
 }

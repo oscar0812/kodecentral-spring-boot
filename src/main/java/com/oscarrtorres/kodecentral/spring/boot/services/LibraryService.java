@@ -1,6 +1,7 @@
 package com.oscarrtorres.kodecentral.spring.boot.services;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Library;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.LibraryModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.LibraryRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,18 @@ public class LibraryService {
         this.stringGeneratorService = stringGeneratorService;
     }
 
-    public List<Library> findAll() {
-        return this.libraryRepository.findAll();
+    public List<LibraryModelResponse> findAll() {
+        return this.libraryRepository.findAll().stream().map(LibraryModelResponse::new).toList();
     }
 
-    public Library save(Library library) {
+    public LibraryModelResponse findBySlug(String librarySlug) {
+        Library library = this.libraryRepository.findBySlug(librarySlug);
+        return new LibraryModelResponse(library);
+    }
+
+    public LibraryModelResponse save(Library library) {
         library.setSlug(stringGeneratorService.generateSlug(library.getName()));
         Library savedLibrary = this.libraryRepository.save(library);
-        return savedLibrary;
+        return new LibraryModelResponse(savedLibrary);
     }
 }

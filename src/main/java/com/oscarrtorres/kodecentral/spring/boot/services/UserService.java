@@ -7,6 +7,7 @@ import com.oscarrtorres.kodecentral.spring.boot.models.Library;
 import com.oscarrtorres.kodecentral.spring.boot.models.Post;
 import com.oscarrtorres.kodecentral.spring.boot.models.User;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.CustomHttpResponse;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.UserModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +22,19 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> findAll() {
-        List<User> userList = userRepository.findAll();
-        for(User user: userList) {
+    public List<UserModelResponse> findAll() {
+        List<UserModelResponse> userList = userRepository.findAll().stream().map(UserModelResponse::new).toList();
+        for(UserModelResponse user: userList) {
             user.setPassword(null); // don't expose password
         }
         return userList;
     }
 
-    public User save(User user) throws AlreadyExistsException {
+    public UserModelResponse save(User user) throws AlreadyExistsException {
         userRepository.findByEmail(user.getEmail()).ifPresent(p -> {throw new AlreadyExistsException("Email already exists");});
         userRepository.findByUsername(user.getUsername()).ifPresent(p -> {throw new AlreadyExistsException("Username already exists");});
         User savedUser = userRepository.save(user);
         savedUser.setPassword(null); // don't expose password
-        return savedUser;
+        return new UserModelResponse(savedUser);
     }
 }

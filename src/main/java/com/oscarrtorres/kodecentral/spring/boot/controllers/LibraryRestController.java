@@ -1,6 +1,7 @@
 package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Library;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.LibraryModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.LibraryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -20,13 +21,18 @@ public class LibraryRestController {
     }
 
     @GetMapping
-    public List<Library> findAll() {
+    public List<LibraryModelResponse> findAll() {
         return libraryService.findAll();
+    }
+
+    @GetMapping("/slug")
+    public LibraryModelResponse findBySlug(@RequestParam("slug") String librarySlug) {
+        return libraryService.findBySlug(librarySlug);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Library save(@RequestBody @Valid Library library) {
+    public LibraryModelResponse save(@RequestBody @Valid Library library) {
         return libraryService.save(library);
     }
 }

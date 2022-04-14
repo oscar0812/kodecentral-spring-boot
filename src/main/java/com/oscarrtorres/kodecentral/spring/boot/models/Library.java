@@ -45,7 +45,6 @@ public class Library {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by_user_id", nullable = false)
     @ToString.Exclude
-    @JsonIgnore
     @CreatedBy
     private User createdByUser;
 
@@ -55,5 +54,5 @@ public class Library {
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private Instant UpdatedAt;
+    private Instant updatedAt;
 }

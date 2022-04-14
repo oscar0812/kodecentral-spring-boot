@@ -10,4 +10,6 @@ import java.util.List;
 public interface PostRepository extends CrudRepository<Post, Long> {
     List<Post> findAll();
     List<Post> findBySlug(String slug);
+
+    List<Post> findByParentLibrarySlug(String librarySlug);
 }

@@ -1,11 +1,6 @@
 package com.oscarrtorres.kodecentral.spring.boot.models;
 
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -53,14 +48,12 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "posted_by_user_id", nullable = false)
     @ToString.Exclude
-    @JsonIgnore
     @CreatedBy
     private User postedByUser;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "library_id", nullable = false)
     @ToString.Exclude
-    @JsonIgnore
     private Library parentLibrary;
 
     @ManyToMany
@@ -68,12 +61,10 @@ public class Post {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @ToString.Exclude
-    @JsonIgnore
     private Set<User> favoriteUsers = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "parentPost")
     @ToString.Exclude
-    @JsonIgnore
     private Set<Comment> comments = new LinkedHashSet<>();
 
     @ManyToOne(cascade = {CascadeType.ALL})
@@ -90,5 +81,5 @@ public class Post {
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private Instant UpdatedAt;
+    private Instant updatedAt;
 }

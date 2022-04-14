@@ -1,6 +1,7 @@
 package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Post;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.PostModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +20,18 @@ public class PostRestController {
     }
 
     @GetMapping
-    public List<Post> findAll() {
+    public List<PostModelResponse> findAll() {
         return postService.findAll();
+    }
+
+    @GetMapping("/library")
+    public List<PostModelResponse> findByParentLibrarySlug(@RequestParam("slug") String librarySlug) {
+        return postService.findByParentLibrarySlug(librarySlug);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Post save(@RequestBody @Valid Post post) {
+    public PostModelResponse save(@RequestBody @Valid Post post) {
         return postService.save(post);
     }
 }

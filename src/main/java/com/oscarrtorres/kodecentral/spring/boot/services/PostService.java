@@ -1,6 +1,7 @@
 package com.oscarrtorres.kodecentral.spring.boot.services;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Post;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.PostModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.PostRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +17,21 @@ public class PostService {
         this.stringGeneratorService = stringGeneratorService;
     }
 
-    public List<Post> findAll() {
-        return postRepository.findAll();
+    public List<PostModelResponse> findAll() {
+        return postRepository.findAll().stream().map(PostModelResponse::new).toList();
     }
 
-    public Post save(Post post) {
+    public List<PostModelResponse> findByParentLibrarySlug(String librarySlug) {
+        return postRepository.findByParentLibrarySlug(librarySlug).stream().map(PostModelResponse::new).toList();
+    }
+
+    public List<PostModelResponse> findBySlug(String slug) {
+        return postRepository.findBySlug(slug).stream().map(PostModelResponse::new).toList();
+    }
+
+    public PostModelResponse save(Post post) {
         post.setSlug(stringGeneratorService.generateSlug(post.getTitle()));
         Post savedPost = postRepository.save(post);
-        return savedPost;
-    }
-
-    public List<Post> findBySlug(String slug) {
-        return postRepository.findBySlug(slug);
+        return new PostModelResponse(savedPost);
     }
 }
