@@ -1,7 +1,6 @@
 package com.oscarrtorres.kodecentral.spring.boot.services;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Comment;
-import com.oscarrtorres.kodecentral.spring.boot.models.response.CommentResponse;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.CommentRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +14,12 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public List<CommentResponse> findAll() {
-        return commentRepository.findAll().stream().map(CommentResponse::new).toList();
+    public List<Comment> findAll() {
+        return commentRepository.findAll();
     }
 
-    public CommentResponse save(Comment comment) {
+    public Comment save(Comment comment) {
         Comment savedComment = commentRepository.save(comment);
-        return new CommentResponse(savedComment);
+        return savedComment;
     }
 }

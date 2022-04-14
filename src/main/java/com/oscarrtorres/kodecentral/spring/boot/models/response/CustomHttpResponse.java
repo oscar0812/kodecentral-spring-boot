@@ -1,4 +1,4 @@
-package com.oscarrtorres.kodecentral.spring.boot.exceptions;
+package com.oscarrtorres.kodecentral.spring.boot.models.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
@@ -7,11 +7,12 @@ import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Getter
 @Setter
-public class ErrorResponse {
+public class CustomHttpResponse {
     // customizing timestamp serialization format
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date timestamp;
@@ -19,32 +20,40 @@ public class ErrorResponse {
     private String status;
     private List<String> errors = new ArrayList<>();
     private List<String> causeStackTrace;
-    private Object data;
+    private HashMap<String, Object> data;
 
-    public ErrorResponse() {
+    public CustomHttpResponse() {
         timestamp = new Date();
     }
 
-    public ErrorResponse(HttpStatus httpStatus) {
+    public CustomHttpResponse(HttpStatus httpStatus) {
         this();
         this.code = httpStatus.value();
         this.status = httpStatus.name();
     }
 
-    public ErrorResponse(HttpStatus httpStatus, List<Exception> causeStackTrace) {
+    public CustomHttpResponse(HttpStatus httpStatus, List<Exception> causeStackTrace) {
         this(httpStatus);
         // skip the first element 1->N to avoid putting the error message twice
         this.causeStackTrace = causeStackTrace.stream().map(Throwable::getMessage).skip(1).toList();
     }
 
-    public ErrorResponse(HttpStatus httpStatus, String error, List<Exception> causeStackTrace) {
+    public CustomHttpResponse(HttpStatus httpStatus, String error, List<Exception> causeStackTrace) {
         this(httpStatus, causeStackTrace);
         this.errors.add(error);
     }
 
-    public ErrorResponse(HttpStatus httpStatus, List<String> errors, List<Exception> causeStackTrace) {
+    public CustomHttpResponse(HttpStatus httpStatus, List<String> errors, List<Exception> causeStackTrace) {
         this(httpStatus, causeStackTrace);
         this.errors = errors;
+    }
 
+    public CustomHttpResponse addData(String key, Object value) {
+        data.put(key, value);
+        return this;
+    }
+
+    public void setData(HashMap<String, Object> data) {
+        this.data = data;
     }
 }

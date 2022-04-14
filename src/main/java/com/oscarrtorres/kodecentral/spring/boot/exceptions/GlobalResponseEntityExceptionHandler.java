@@ -1,9 +1,9 @@
 package com.oscarrtorres.kodecentral.spring.boot.exceptions;
 
+import com.oscarrtorres.kodecentral.spring.boot.models.response.CustomHttpResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,22 +27,22 @@ public class GlobalResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<CustomHttpResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<String> messageList = e.getBindingResult().getFieldErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage).filter(Objects::nonNull).toList();
 
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ErrorResponse er = new ErrorResponse(status, messageList, stackTraceCauses(e));
+        CustomHttpResponse er = new CustomHttpResponse(status, messageList, stackTraceCauses(e));
 
         return new ResponseEntity<>(er, status);
     }
 
     // fallback method
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleExceptions(HttpServletRequest request, Exception e) {
+    public ResponseEntity<CustomHttpResponse> handleExceptions(HttpServletRequest request, Exception e) {
         e.printStackTrace();
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ErrorResponse er = new ErrorResponse(status, e.getMessage(), stackTraceCauses(e));
+        CustomHttpResponse er = new CustomHttpResponse(status, e.getMessage(), stackTraceCauses(e));
         return new ResponseEntity<>(er, status);
     }
 }

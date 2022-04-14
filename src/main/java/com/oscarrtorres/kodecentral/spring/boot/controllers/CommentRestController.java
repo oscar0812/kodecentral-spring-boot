@@ -1,7 +1,6 @@
 package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Comment;
-import com.oscarrtorres.kodecentral.spring.boot.models.response.CommentResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +18,13 @@ public class CommentRestController {
     }
 
     @GetMapping
-    public List<CommentResponse> findAll() {
+    public List<Comment> findAll() {
         return commentService.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentResponse save(@RequestBody @Valid Comment comment) {
+    public Comment save(@RequestBody @Valid Comment comment) {
         return commentService.save(comment);
     }
 }

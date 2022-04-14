@@ -1,6 +1,8 @@
 package com.oscarrtorres.kodecentral.spring.boot.models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -65,18 +67,22 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id"))
     @ToString.Exclude
+    @JsonIgnore
     private Set<Post> favoritePosts = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "postedByUser", fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JsonIgnore
     private Set<Post> posts = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "createdByUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "createdByUser", fetch = FetchType.EAGER)
     @ToString.Exclude
+    @JsonIgnore
     private Set<Library> libraries = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "createdByUser", fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JsonIgnore
     private Set<Comment> comments = new LinkedHashSet<>();
 
     @CreationTimestamp

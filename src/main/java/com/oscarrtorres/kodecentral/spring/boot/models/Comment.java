@@ -35,6 +35,7 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
+    @JsonIgnore
     @CreatedBy
     private User createdByUser;
 
@@ -42,6 +43,7 @@ public class Comment {
     @JoinColumn(name = "post_id", nullable = false)
     @NotNull(message = "parentPost is required")
     @ToString.Exclude
+    @JsonIgnore
     private Post parentPost;
 
     @CreationTimestamp
