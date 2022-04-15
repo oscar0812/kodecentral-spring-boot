@@ -12,7 +12,6 @@ public class UserModelResponse {
     private Long id;
     private String username;
     private String email;
-    private String password;
     private String profilePicture;
     private String bio;
     private Boolean isSuper;
@@ -25,7 +24,6 @@ public class UserModelResponse {
         this.id = user.getId();
         this.username = user.getUsername();
         this.email = user.getEmail();
-        this.password = user.getPassword();
         this.profilePicture = user.getProfilePicture();
         this.bio = user.getBio();
         this.isSuper = user.getIsSuper();
