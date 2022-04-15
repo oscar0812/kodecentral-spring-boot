@@ -30,8 +30,9 @@ public class PostService {
         return postRepository.findByParentLibrarySlug(librarySlug).stream().map(PostModelResponse::new).toList();
     }
 
-    public List<PostModelResponse> findBySlug(String slug) {
-        return postRepository.findBySlug(slug).stream().map(PostModelResponse::new).toList();
+    public PostModelResponse findBySlug(String slug) {
+        Post post = this.postRepository.findBySlug(slug);
+        return new PostModelResponse(post);
     }
 
     public PostModelResponse save(Post post) {

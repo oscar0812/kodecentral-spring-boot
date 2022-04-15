@@ -2,6 +2,7 @@ package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Post;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.CommentModelResponse;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.LibraryModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.PostModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.PostService;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,11 @@ public class PostRestController {
     @GetMapping("/library")
     public List<PostModelResponse> findByParentLibrarySlug(@RequestParam("slug") String librarySlug) {
         return postService.findByParentLibrarySlug(librarySlug);
+    }
+
+    @GetMapping("/slug")
+    public PostModelResponse findBySlug(@RequestParam("slug") String librarySlug) {
+        return postService.findBySlug(librarySlug);
     }
 
     @PostMapping

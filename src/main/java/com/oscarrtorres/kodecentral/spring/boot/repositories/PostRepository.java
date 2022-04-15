@@ -18,7 +18,7 @@ public interface PostRepository extends CrudRepository<Post, Long> {
             "LIMIT :limit", nativeQuery = true)
     List<Post> findLatest(@Param("limit") int limit);
 
-    List<Post> findBySlug(String slug);
+    Post findBySlug(String slug);
 
     List<Post> findByParentLibrarySlug(String librarySlug);
 }

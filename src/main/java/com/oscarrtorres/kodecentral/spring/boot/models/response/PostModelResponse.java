@@ -5,6 +5,7 @@ import com.oscarrtorres.kodecentral.spring.boot.models.Post;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.List;
 
 @ToString
 @Getter
@@ -17,8 +18,9 @@ public class PostModelResponse {
     private Post previousPost;
     private Post nextPost;
 
-    private String parentLibrarySlug;
-    private String parentLibraryName;
+    private LibraryModelResponse parentLibrary;
+    private UserModelResponse createdByUser;
+    private List<CommentModelResponse> comments;
 
     private Instant createdAt;
     private Instant updatedAt;
@@ -30,8 +32,9 @@ public class PostModelResponse {
         this.text = post.getText();
         this.previousPost = post.getPreviousPost();
         this.nextPost = post.getNextPost();
-        this.parentLibrarySlug = post.getParentLibrary().getSlug();
-        this.parentLibraryName = post.getParentLibrary().getName();
+        this.parentLibrary = new LibraryModelResponse(post.getParentLibrary());
+        this.createdByUser = new UserModelResponse(post.getCreatedByUser());
+        this.comments = post.getComments().stream().map(CommentModelResponse::new).toList();
 
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();

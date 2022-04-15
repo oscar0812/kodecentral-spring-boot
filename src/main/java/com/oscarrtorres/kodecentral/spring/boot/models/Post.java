@@ -49,7 +49,7 @@ public class Post {
     @JoinColumn(name = "posted_by_user_id", nullable = false)
     @ToString.Exclude
     @CreatedBy
-    private User postedByUser;
+    private User createdByUser;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "library_id", nullable = false)

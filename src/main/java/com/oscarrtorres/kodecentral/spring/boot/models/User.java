@@ -1,11 +1,9 @@
 package com.oscarrtorres.kodecentral.spring.boot.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -66,7 +64,7 @@ public class User {
     @ToString.Exclude
     private Set<Post> favoritePosts = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "postedByUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "createdByUser", fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<Post> posts = new LinkedHashSet<>();
 

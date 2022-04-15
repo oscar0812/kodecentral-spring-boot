@@ -13,12 +13,15 @@ import java.time.Instant;
 public class CommentModelResponse {
     private Long id;
     private String text;
+    private UserModelResponse createdByUser;
     private Instant createdAt;
     private Instant updatedAt;
 
     public CommentModelResponse(Comment comment) {
         this.id = comment.getId();
         this.text = comment.getText();
+        this.createdByUser = new UserModelResponse(comment.getCreatedByUser());
+
         this.createdAt = comment.getCreatedAt();
         this.updatedAt = comment.getUpdatedAt();
     }

@@ -39,7 +39,6 @@ public class Library {
 
     @OneToMany(mappedBy = "parentLibrary", fetch = FetchType.LAZY)
     @ToString.Exclude
-    @JsonIgnore
     private Set<Post> childPosts = new LinkedHashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
