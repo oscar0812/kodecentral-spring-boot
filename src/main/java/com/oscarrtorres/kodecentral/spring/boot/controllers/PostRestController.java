@@ -1,6 +1,7 @@
 package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Post;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.CommentModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.PostModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.PostService;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,11 @@ public class PostRestController {
     @GetMapping
     public List<PostModelResponse> findAll() {
         return postService.findAll();
+    }
+
+    @GetMapping("/latest")
+    public List<PostModelResponse> findLatest(@RequestParam("limit") int limit) {
+        return postService.findLatest(limit);
     }
 
     @GetMapping("/library")

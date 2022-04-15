@@ -1,6 +1,7 @@
 package com.oscarrtorres.kodecentral.spring.boot.services;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Post;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.CommentModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.PostModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.PostRepository;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,10 @@ public class PostService {
 
     public List<PostModelResponse> findAll() {
         return postRepository.findAll().stream().map(PostModelResponse::new).toList();
+    }
+
+    public List<PostModelResponse> findLatest(int limit) {
+        return postRepository.findLatest(limit).stream().map(PostModelResponse::new).toList();
     }
 
     public List<PostModelResponse> findByParentLibrarySlug(String librarySlug) {

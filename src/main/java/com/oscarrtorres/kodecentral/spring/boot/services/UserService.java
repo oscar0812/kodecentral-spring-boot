@@ -23,18 +23,13 @@ public class UserService {
     }
 
     public List<UserModelResponse> findAll() {
-        List<UserModelResponse> userList = userRepository.findAll().stream().map(UserModelResponse::new).toList();
-        for(UserModelResponse user: userList) {
-            user.setPassword(null); // don't expose password
-        }
-        return userList;
+        return userRepository.findAll().stream().map(UserModelResponse::new).toList();
     }
 
     public UserModelResponse save(User user) throws AlreadyExistsException {
         userRepository.findByEmail(user.getEmail()).ifPresent(p -> {throw new AlreadyExistsException("Email already exists");});
         userRepository.findByUsername(user.getUsername()).ifPresent(p -> {throw new AlreadyExistsException("Username already exists");});
         User savedUser = userRepository.save(user);
-        savedUser.setPassword(null); // don't expose password
         return new UserModelResponse(savedUser);
     }
 }
