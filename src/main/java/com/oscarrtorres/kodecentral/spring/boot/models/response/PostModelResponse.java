@@ -14,13 +14,13 @@ public class PostModelResponse {
     private String slug;
     private String title;
     private String text;
-
     private Post previousPost;
-
     private Post nextPost;
 
-    private Instant createdAt;
+    private String parentLibrarySlug;
+    private String parentLibraryName;
 
+    private Instant createdAt;
     private Instant updatedAt;
 
     public PostModelResponse(Post post) {
@@ -30,6 +30,9 @@ public class PostModelResponse {
         this.text = post.getText();
         this.previousPost = post.getPreviousPost();
         this.nextPost = post.getNextPost();
+        this.parentLibrarySlug = post.getParentLibrary().getSlug();
+        this.parentLibraryName = post.getParentLibrary().getName();
+
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
     }
