@@ -67,13 +67,7 @@ public class Post {
     @ToString.Exclude
     private Set<Comment> comments = new LinkedHashSet<>();
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "previous_post_id")
-    private Post previousPost;
-
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "next_post_id")
-    private Post nextPost;
+    private long libraryIndex = 0;
 
     @CreationTimestamp
     @Column(name = "created_at")

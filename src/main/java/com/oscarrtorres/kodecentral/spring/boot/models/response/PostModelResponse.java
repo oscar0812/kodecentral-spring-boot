@@ -15,8 +15,7 @@ public class PostModelResponse {
     private String slug;
     private String title;
     private String text;
-    private Post previousPost;
-    private Post nextPost;
+    private long libraryIndex;
 
     private LibraryModelResponse parentLibrary;
     private UserModelResponse createdByUser;
@@ -30,8 +29,7 @@ public class PostModelResponse {
         this.slug = post.getSlug();
         this.title = post.getTitle();
         this.text = post.getText();
-        this.previousPost = post.getPreviousPost();
-        this.nextPost = post.getNextPost();
+        this.libraryIndex = post.getLibraryIndex();
         this.parentLibrary = new LibraryModelResponse(post.getParentLibrary());
         this.createdByUser = new UserModelResponse(post.getCreatedByUser());
         this.comments = post.getComments().stream().map(CommentModelResponse::new).toList();
