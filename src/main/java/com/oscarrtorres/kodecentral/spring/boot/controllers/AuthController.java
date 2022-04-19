@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@CrossOrigin(origins = "${angular.cors.url}")
 @RestController
 @RequestMapping("${spring.data.rest.basePath}/auth")
 public class AuthController {
