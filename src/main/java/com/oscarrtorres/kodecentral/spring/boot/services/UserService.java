@@ -9,6 +9,7 @@ import com.oscarrtorres.kodecentral.spring.boot.models.User;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.CustomHttpResponse;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.UserModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.UserRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -17,9 +18,13 @@ import java.util.*;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final MailClient mailClient;
+    private final StringGeneratorService stringGeneratorService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, MailClient mailClient, @Lazy StringGeneratorService stringGeneratorService) {
         this.userRepository = userRepository;
+        this.mailClient = mailClient;
+        this.stringGeneratorService = stringGeneratorService;
     }
 
     public List<UserModelResponse> findAll() {
@@ -27,9 +32,16 @@ public class UserService {
     }
 
     public UserModelResponse save(User user) throws AlreadyExistsException {
-        userRepository.findByEmail(user.getEmail()).ifPresent(p -> {throw new AlreadyExistsException("Email already exists");});
-        userRepository.findByUsername(user.getUsername()).ifPresent(p -> {throw new AlreadyExistsException("Username already exists");});
+        userRepository.findByEmail(user.getEmail()).ifPresent(u -> {
+            throw new AlreadyExistsException("Email already exists");
+        });
+        userRepository.findByUsername(user.getUsername()).ifPresent(u -> {
+            throw new AlreadyExistsException("Username already exists");
+        });
+        user.setConfirmationKey(stringGeneratorService.generateRandomAlphaNumericString(32));
         User savedUser = userRepository.save(user);
-        return new UserModelResponse(savedUser);
+
+        mailClient.sendConfirmationEmail(savedUser);
+        return new UserModelResponse(user);
     }
 }
