@@ -1,6 +1,8 @@
 package com.oscarrtorres.kodecentral.spring.boot.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -36,7 +38,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String b = "Bearer ";
         if(authorizationHeader != null && authorizationHeader.startsWith(b)) {
             jwt = authorizationHeader.substring(b.length());
-            username = jwtUtil.extractUsername(jwt);
+            try {
+                username = jwtUtil.extractUsername(jwt);
+            }catch(ExpiredJwtException e) {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            }
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

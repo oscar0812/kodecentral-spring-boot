@@ -9,7 +9,9 @@ import com.oscarrtorres.kodecentral.spring.boot.models.User;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.CustomHttpResponse;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.UserModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.UserRepository;
+import com.oscarrtorres.kodecentral.spring.boot.security.MyUserPrincipal;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -29,6 +31,15 @@ public class UserService {
 
     public List<UserModelResponse> findAll() {
         return userRepository.findAll().stream().map(UserModelResponse::new).toList();
+    }
+
+    public UserModelResponse findByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isEmpty()) {
+            throw new UsernameNotFoundException(username);
+        }
+
+        return new UserModelResponse(user.get());
     }
 
     public UserModelResponse save(User user) throws AlreadyExistsException {

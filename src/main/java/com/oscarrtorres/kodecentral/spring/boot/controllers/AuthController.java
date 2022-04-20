@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 @CrossOrigin(origins = "${angular.cors.url}")
 @RestController
@@ -46,9 +47,10 @@ public class AuthController {
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginUserDTO.getUsername());
-        final String jwt = jwtUtil.generateToken(userDetails);
+        final String jwtToken = jwtUtil.generateToken(userDetails);
+        final Date expiresAt = jwtUtil.extractExpiration(jwtToken);
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(new AuthenticationResponse(jwtToken, expiresAt, loginUserDTO.getUsername()));
     }
 
     @PostMapping("/register")

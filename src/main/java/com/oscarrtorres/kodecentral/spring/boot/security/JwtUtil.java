@@ -1,9 +1,12 @@
 package com.oscarrtorres.kodecentral.spring.boot.security;
 
+import com.oscarrtorres.kodecentral.spring.boot.models.response.CustomHttpResponse;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +39,7 @@ public class JwtUtil {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -47,7 +50,7 @@ public class JwtUtil {
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * this.expirationInMinutes))
+                .setExpiration(new Date(System.currentTimeMillis() + (1000L * 60 * this.expirationInMinutes)))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 

@@ -2,6 +2,7 @@ package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Post;
 import com.oscarrtorres.kodecentral.spring.boot.models.User;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.PostModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.UserModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -23,5 +24,10 @@ public class UserRestController {
     @GetMapping
     public List<UserModelResponse> findAll() {
         return userService.findAll();
+    }
+
+    @GetMapping("/username")
+    public UserModelResponse findByUsername(@RequestParam("username") String username) {
+        return userService.findByUsername(username);
     }
 }
