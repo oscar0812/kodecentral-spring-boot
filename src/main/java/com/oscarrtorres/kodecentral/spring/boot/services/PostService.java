@@ -35,6 +35,10 @@ public class PostService {
         return new PostModelResponse(post);
     }
 
+    public List<PostModelResponse> findByUsername(String username) {
+        return postRepository.findByCreatedByUserUsername(username).stream().map(PostModelResponse::new).toList();
+    }
+
     public PostModelResponse save(Post post) {
         post.setSlug(stringGeneratorService.generateSlug(post.getTitle()));
         Post savedPost = postRepository.save(post);

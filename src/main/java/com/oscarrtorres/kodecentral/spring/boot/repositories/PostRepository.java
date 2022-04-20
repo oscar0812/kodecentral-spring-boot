@@ -20,5 +20,7 @@ public interface PostRepository extends CrudRepository<Post, Long> {
 
     Post findBySlug(String slug);
 
+    List<Post> findByCreatedByUserUsername(@Param("username") String username);
+
     List<Post> findByParentLibrarySlug(String librarySlug);
 }

@@ -10,7 +10,4 @@ import java.util.Date;
 @AllArgsConstructor
 public class AuthenticationResponse {
     private final String jwtToken;
-    private final Date expiresAt;
-
-    private final String username;
 }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.oscarrtorres.kodecentral.spring.boot.exceptions.AlreadyExistsException;
 import com.oscarrtorres.kodecentral.spring.boot.models.User;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.UserModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class UserRepositoryTest {
         user.setEmail("ooo@gmail.com");
         user.setPassword("passpass");
         Throwable exception = assertThrows(AlreadyExistsException.class, () -> {
-            User savedUser = userService.save(user);
+            UserModelResponse savedUser = userService.save(user);
         });
 
         // User existUser = entityManager.find(User.class, savedUser.getId());

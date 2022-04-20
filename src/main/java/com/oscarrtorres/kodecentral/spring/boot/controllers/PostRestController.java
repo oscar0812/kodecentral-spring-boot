@@ -41,6 +41,11 @@ public class PostRestController {
         return postService.findBySlug(librarySlug);
     }
 
+    @GetMapping("/user")
+    public List<PostModelResponse> findByUser(@RequestParam("username") String username) {
+        return postService.findByUsername(username);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PostModelResponse save(@RequestBody @Valid Post post) {

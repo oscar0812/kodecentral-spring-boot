@@ -23,7 +23,7 @@ public class Application {
 		return () -> {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-			if (authentication == null || !authentication.isAuthenticated()) {
+			if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() instanceof String) {
 				return Optional.empty();
 			}
 
