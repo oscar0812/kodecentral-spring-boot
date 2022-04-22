@@ -2,6 +2,7 @@ package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
 import com.oscarrtorres.kodecentral.spring.boot.models.Comment;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.CommentModelResponse;
+import com.oscarrtorres.kodecentral.spring.boot.models.response.PostModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,11 @@ public class CommentRestController {
     @GetMapping
     public List<CommentModelResponse> findAll() {
         return commentService.findAll();
+    }
+
+    @GetMapping("/user")
+    public List<CommentModelResponse> findByUser(@RequestParam("username") String username) {
+        return commentService.findByUsername(username);
     }
 
     @PostMapping

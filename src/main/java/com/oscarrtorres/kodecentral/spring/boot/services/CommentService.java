@@ -19,6 +19,10 @@ public class CommentService {
         return commentRepository.findAll().stream().map(CommentModelResponse::new).toList();
     }
 
+    public List<CommentModelResponse> findByUsername(String username) {
+        return commentRepository.findByCreatedByUserUsernameOrderByCreatedAt(username).stream().map(CommentModelResponse::new).toList();
+    }
+
     public CommentModelResponse save(Comment comment) {
         Comment savedComment = commentRepository.save(comment);
         return new CommentModelResponse(savedComment);
