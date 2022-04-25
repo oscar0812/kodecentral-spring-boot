@@ -35,15 +35,12 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
-    private final AuditorAware<User> auditorAware;
-
-    public AuthController(AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder, UserService userService, AuditorAware<User> auditorAware) {
+    public AuthController(AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
-        this.auditorAware = auditorAware;
     }
 
     @PostMapping("/login")
@@ -69,10 +66,7 @@ public class AuthController {
 
     @GetMapping("/current")
     public UserModelResponse getCurrentLoggedInUser() {
-        Optional<User> user = auditorAware.getCurrentAuditor();
-        if(user.isEmpty()) {
-            return null;
-        }
-        return new UserModelResponse(user.get());
+        User user = userService.getCurrent();
+        return user == null? null : new UserModelResponse(user);
     }
 }

@@ -11,6 +11,7 @@ import com.oscarrtorres.kodecentral.spring.boot.models.response.UserModelRespons
 import com.oscarrtorres.kodecentral.spring.boot.repositories.UserRepository;
 import com.oscarrtorres.kodecentral.spring.boot.security.MyUserPrincipal;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +24,21 @@ public class UserService {
     private final MailClient mailClient;
     private final StringGeneratorService stringGeneratorService;
 
-    public UserService(UserRepository userRepository, MailClient mailClient, @Lazy StringGeneratorService stringGeneratorService) {
+    private final AuditorAware<User> auditorAware;
+
+    public UserService(UserRepository userRepository, MailClient mailClient, @Lazy StringGeneratorService stringGeneratorService, AuditorAware<User> auditorAware) {
         this.userRepository = userRepository;
         this.mailClient = mailClient;
         this.stringGeneratorService = stringGeneratorService;
+        this.auditorAware = auditorAware;
+    }
+
+    public User getCurrent() {
+        Optional<User> user = auditorAware.getCurrentAuditor();
+        if(user.isEmpty()) {
+            return null;
+        }
+        return user.get();
     }
 
     public List<UserModelResponse> findAll() {
@@ -43,16 +55,21 @@ public class UserService {
     }
 
     public UserModelResponse save(User user) throws AlreadyExistsException {
-        userRepository.findByEmail(user.getEmail()).ifPresent(u -> {
-            throw new AlreadyExistsException("Email already exists");
-        });
-        userRepository.findByUsername(user.getUsername()).ifPresent(u -> {
-            throw new AlreadyExistsException("Username already exists");
-        });
-        user.setConfirmationKey(stringGeneratorService.generateRandomAlphaNumericString(32));
-        User savedUser = userRepository.save(user);
+        if(user.getId() == 0) {
+            userRepository.findByEmail(user.getEmail()).ifPresent(u -> {
+                throw new AlreadyExistsException("Email already exists");
+            });
+            userRepository.findByUsername(user.getUsername()).ifPresent(u -> {
+                throw new AlreadyExistsException("Username already exists");
+            });
 
-        mailClient.sendConfirmationEmail(savedUser);
+            user.setConfirmationKey(stringGeneratorService.generateRandomAlphaNumericString(32));
+        }
+
+        User savedUser = userRepository.save(user);
+        if(user.getId() == 0) {
+            mailClient.sendConfirmationEmail(savedUser);
+        }
         return new UserModelResponse(user);
     }
 }
