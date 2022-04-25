@@ -1,5 +1,6 @@
 package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
+import com.oscarrtorres.kodecentral.spring.boot.exceptions.AuthorizationException;
 import com.oscarrtorres.kodecentral.spring.boot.models.User;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.UserModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.FileUploadService;
@@ -34,12 +35,22 @@ public class UserRestController {
         return userService.findByUsername(username);
     }
 
+    @PatchMapping
+    public UserModelResponse update(@RequestBody User user) throws Exception{
+        User currentUser = userService.getCurrent();
+        if(currentUser == null)
+            throw new AuthorizationException();
+
+        currentUser.setBio(user.getBio());
+        return userService.save(currentUser);
+    }
+
     @PostMapping("/uploadProfilePicture")
     public UserModelResponse uploadImage(@RequestParam("imageFile")MultipartFile file) throws IOException {
         User user = userService.getCurrent();
 
         if(user == null) {
-            throw new AuthenticationException();
+            throw new AuthorizationException();
         } else if (!file.isEmpty()){
             String uploadDir = "uploads/pfp";
 
