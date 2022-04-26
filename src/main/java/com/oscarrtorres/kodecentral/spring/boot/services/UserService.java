@@ -55,7 +55,8 @@ public class UserService {
     }
 
     public UserModelResponse save(User user) throws AlreadyExistsException {
-        if(user.getId() == 0) {
+        boolean newUser = user.getId() == null || user.getId() == 0;
+        if(newUser) {
             userRepository.findByEmail(user.getEmail()).ifPresent(u -> {
                 throw new AlreadyExistsException("Email already exists");
             });
@@ -67,7 +68,7 @@ public class UserService {
         }
 
         User savedUser = userRepository.save(user);
-        if(user.getId() == 0) {
+        if(newUser) {
             mailClient.sendConfirmationEmail(savedUser);
         }
         return new UserModelResponse(user);
