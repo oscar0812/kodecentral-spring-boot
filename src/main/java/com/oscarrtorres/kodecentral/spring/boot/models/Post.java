@@ -67,6 +67,7 @@ public class Post {
     @ToString.Exclude
     private Set<Comment> comments = new LinkedHashSet<>();
 
+    @Column(name = "library_index", nullable = false)
     private long libraryIndex = 0;
 
     @CreationTimestamp

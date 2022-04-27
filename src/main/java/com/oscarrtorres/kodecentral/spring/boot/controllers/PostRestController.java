@@ -1,8 +1,6 @@
 package com.oscarrtorres.kodecentral.spring.boot.controllers;
 
-import com.oscarrtorres.kodecentral.spring.boot.models.Post;
-import com.oscarrtorres.kodecentral.spring.boot.models.response.CommentModelResponse;
-import com.oscarrtorres.kodecentral.spring.boot.models.response.LibraryModelResponse;
+import com.oscarrtorres.kodecentral.spring.boot.dtos.PostDTO;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.PostModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.services.PostService;
 import org.springframework.http.HttpStatus;
@@ -46,9 +44,15 @@ public class PostRestController {
         return postService.findByUsername(username);
     }
 
+    @PatchMapping
+    @ResponseStatus(HttpStatus.OK)
+    public PostModelResponse update(@RequestBody @Valid PostDTO updatePostDTO) {
+        return postService.update(updatePostDTO);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PostModelResponse save(@RequestBody @Valid Post post) {
-        return postService.save(post);
+    public PostModelResponse save(@RequestBody @Valid PostDTO newPostDTO) {
+        return postService.save(newPostDTO);
     }
 }
