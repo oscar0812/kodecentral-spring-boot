@@ -11,16 +11,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @ToString
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -77,4 +75,8 @@ public class Post {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    public Post(Post copy) {
+
+    }
 }

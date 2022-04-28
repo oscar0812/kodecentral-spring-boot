@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @ToString
@@ -54,4 +55,5 @@ public class Library {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
+
 }

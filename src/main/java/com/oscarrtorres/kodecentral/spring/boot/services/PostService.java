@@ -9,6 +9,7 @@ import com.oscarrtorres.kodecentral.spring.boot.repositories.PostRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class PostService {
     }
 
     public List<PostModelResponse> findByParentLibrarySlug(String librarySlug) {
-        return postRepository.findByParentLibrarySlug(librarySlug).stream().map(PostModelResponse::new).toList();
+        return postRepository.findByParentLibrarySlugOrderByLibraryIndex(librarySlug).stream().map(PostModelResponse::new).toList();
     }
 
     public PostModelResponse findBySlug(String slug) {
@@ -41,7 +42,7 @@ public class PostService {
     }
 
     public List<PostModelResponse> findByUsername(String username) {
-        return postRepository.findByCreatedByUserUsername(username).stream().map(PostModelResponse::new).toList();
+        return postRepository.findByCreatedByUserUsernameOrderByLibraryIndex(username).stream().map(PostModelResponse::new).toList();
     }
 
     public PostModelResponse save(Post post) {
@@ -56,6 +57,36 @@ public class PostService {
         return post;
     }
 
+    @Transactional
+    private void updatePostLibraryIndexOrder(Post savedPost) {
+        // 1. get all posts in this library (ordered by library index)
+        List<Post> posts = postRepository.findByParentLibrarySlugOrderByLibraryIndex(savedPost.getParentLibrary().getSlug());
+        if(posts.size() <=1 ) {
+            // no need to update
+            return;
+        }
+
+        // find the post and remove it from the list
+        int index = 0;
+        for (int i = 0; i < posts.size(); i++) {
+            if(posts.get(i).getSlug().equals(savedPost.getSlug())) {
+                index = i;
+                break;
+            }
+        }
+
+        posts.remove(index);
+
+        // add it back to the list in the index it wants to be in
+        posts.add((int)savedPost.getLibraryIndex(), savedPost);
+
+        for (int i = 0; i < posts.size(); i++) {
+            Post p = posts.get(i);
+            p.setLibraryIndex(i);
+            this.postRepository.save(p);
+        }
+    }
+
     public PostModelResponse save(PostDTO newPostDTO) {
         Post post = this.getWithLibraryPopulated(newPostDTO);
         return this.save(post);
@@ -63,17 +94,23 @@ public class PostService {
 
     public PostModelResponse update(PostDTO updatePostDTO) {
         Post currentPost = this.postRepository.findBySlug(updatePostDTO.getPost());
-        Post newPost = this.getWithLibraryPopulated(updatePostDTO);
+        Post oldPost = currentPost.toBuilder().build();
+        Post inPost = this.getWithLibraryPopulated(updatePostDTO);
 
-        if(!currentPost.getTitle().equalsIgnoreCase(newPost.getTitle())) {
+        if (!currentPost.getTitle().equalsIgnoreCase(inPost.getTitle())) {
             // title changed
             currentPost.setTitle(updatePostDTO.getTitle());
             currentPost.setSlug(stringGeneratorService.generateSlug(updatePostDTO.getTitle()));
         }
-        currentPost.setText(newPost.getText());
-        currentPost.setParentLibrary(newPost.getParentLibrary());
+        currentPost.setText(inPost.getText());
+        currentPost.setParentLibrary(inPost.getParentLibrary());
+        currentPost.setLibraryIndex(inPost.getLibraryIndex());
+
 
         Post savedPost = postRepository.save(currentPost);
+
+        updatePostLibraryIndexOrder(savedPost);
+
         return new PostModelResponse(savedPost);
     }
 }
