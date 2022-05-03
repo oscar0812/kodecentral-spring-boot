@@ -33,12 +33,18 @@ public class PostService {
     }
 
     public List<PostModelResponse> findByParentLibrarySlug(String librarySlug) {
-        return postRepository.findByParentLibrarySlugOrderByLibraryIndex(librarySlug).stream().map(PostModelResponse::new).toList();
+        List<PostModelResponse> responseList = postRepository.findByParentLibrarySlugOrderByLibraryIndex(librarySlug).stream().map(PostModelResponse::new).toList();
+        for(PostModelResponse pmr: responseList) {
+            pmr.calculatePreviousAndNextPost();
+        }
+        return responseList;
     }
 
     public PostModelResponse findBySlug(String slug) {
         Post post = this.postRepository.findBySlug(slug);
-        return new PostModelResponse(post);
+        PostModelResponse pmr = new PostModelResponse(post);
+        pmr.calculatePreviousAndNextPost();
+        return pmr;
     }
 
     public List<PostModelResponse> findByUsername(String username) {

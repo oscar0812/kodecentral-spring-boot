@@ -76,7 +76,18 @@ public class Post {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    public Post(Post copy) {
-
-    }
+//    @Transient
+//    private int libraryId;
+//
+//    @Transient
+//    private int postedByUserId;
+//
+//    @Transient
+//    private String hyperlink;
+//
+//    @Transient
+//    private Instant postedDate;
+//
+//    @Transient
+//    private int creatorId;
 }

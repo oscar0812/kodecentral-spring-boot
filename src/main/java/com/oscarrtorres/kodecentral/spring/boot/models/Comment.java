@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
@@ -47,4 +48,13 @@ public class Comment {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant UpdatedAt;
+
+//    @Transient
+//    private long userId;
+//
+//    @Transient
+//    private Instant postedTime;
+//
+//    @Transient
+//    private long postId;
 }
