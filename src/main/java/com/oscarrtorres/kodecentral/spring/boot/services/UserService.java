@@ -1,17 +1,10 @@
 package com.oscarrtorres.kodecentral.spring.boot.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oscarrtorres.kodecentral.spring.boot.exceptions.AlreadyExistsException;
-import com.oscarrtorres.kodecentral.spring.boot.models.Comment;
-import com.oscarrtorres.kodecentral.spring.boot.models.Library;
-import com.oscarrtorres.kodecentral.spring.boot.models.Post;
 import com.oscarrtorres.kodecentral.spring.boot.models.User;
-import com.oscarrtorres.kodecentral.spring.boot.models.response.CustomHttpResponse;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.UserModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.UserRepository;
-import com.oscarrtorres.kodecentral.spring.boot.security.MyUserPrincipal;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,22 +17,13 @@ public class UserService {
     private final MailClient mailClient;
     private final StringGeneratorService stringGeneratorService;
 
-    private final AuditorAware<User> auditorAware;
 
-    public UserService(UserRepository userRepository, MailClient mailClient, @Lazy StringGeneratorService stringGeneratorService, AuditorAware<User> auditorAware) {
+    public UserService(UserRepository userRepository, MailClient mailClient, @Lazy StringGeneratorService stringGeneratorService) {
         this.userRepository = userRepository;
         this.mailClient = mailClient;
         this.stringGeneratorService = stringGeneratorService;
-        this.auditorAware = auditorAware;
     }
 
-    public User getCurrent() {
-        Optional<User> user = auditorAware.getCurrentAuditor();
-        if(user.isEmpty()) {
-            return null;
-        }
-        return user.get();
-    }
 
     public List<UserModelResponse> findAll() {
         return userRepository.findAll().stream().map(UserModelResponse::new).toList();
