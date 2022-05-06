@@ -1,27 +1,37 @@
 package com.oscarrtorres.kodecentral.spring.boot.services;
 
 import com.oscarrtorres.kodecentral.spring.boot.dtos.PostDTO;
-import com.oscarrtorres.kodecentral.spring.boot.models.Library;
+import com.oscarrtorres.kodecentral.spring.boot.exceptions.AuthorizationException;
 import com.oscarrtorres.kodecentral.spring.boot.models.Post;
+import com.oscarrtorres.kodecentral.spring.boot.models.User;
 import com.oscarrtorres.kodecentral.spring.boot.models.response.PostModelResponse;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.LibraryRepository;
 import com.oscarrtorres.kodecentral.spring.boot.repositories.PostRepository;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
     private final PostRepository postRepository;
     private final StringGeneratorService stringGeneratorService;
-    private final LibraryRepository libraryRepository;
 
-    public PostService(PostRepository postRepository, StringGeneratorService stringGeneratorService, @Lazy LibraryRepository libraryRepository) {
+    @Autowired
+    private LibraryRepository libraryRepository;
+
+    @Autowired
+    private AuditorAware<User> auditorAware;
+
+    public PostService(PostRepository postRepository, StringGeneratorService stringGeneratorService) {
         this.postRepository = postRepository;
         this.stringGeneratorService = stringGeneratorService;
-        this.libraryRepository = libraryRepository;
     }
 
     public List<PostModelResponse> findAll() {
@@ -99,8 +109,18 @@ public class PostService {
     }
 
     public PostModelResponse update(PostDTO updatePostDTO) {
+        Optional<User> currentUser = auditorAware.getCurrentAuditor();
         Post currentPost = this.postRepository.findBySlug(updatePostDTO.getPost());
-        Post oldPost = currentPost.toBuilder().build();
+        if(currentUser.isPresent()) {
+            if(!currentUser.get().getUsername().equals(currentPost.getCreatedByUser().getUsername())) {
+                // not their post, don't allow updates
+                throw new AuthorizationException("Unauthorized POST UPDATE");
+            }
+        } else {
+            throw new AuthorizationException();
+        }
+
+
         Post inPost = this.getWithLibraryPopulated(updatePostDTO);
 
         if (!currentPost.getTitle().equalsIgnoreCase(inPost.getTitle())) {
@@ -118,5 +138,29 @@ public class PostService {
         updatePostLibraryIndexOrder(savedPost);
 
         return new PostModelResponse(savedPost);
+    }
+
+    public List<PostModelResponse> getPostWhereTextContainsAnyWord(String wholeString) {
+        List<String> words = Arrays.stream(wholeString.trim().split("\\s+")).toList();
+        return this.getPostsWhereTextContainsAnyWord(words).stream().map(PostModelResponse::new).toList();
+    }
+
+
+    private List<Post> getPostsWhereTextContainsAnyWord(List<String> words) {
+        if(words.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Specification<Post> specification = null;
+        for(String word : words) {
+            Specification<Post> wordSpecification = Specifications.postTextContains(word);
+            if(specification == null) {
+                specification = wordSpecification;
+            } else {
+                specification = specification.or(wordSpecification);
+            }
+        }
+
+        return postRepository.findAll(specification);
     }
 }
