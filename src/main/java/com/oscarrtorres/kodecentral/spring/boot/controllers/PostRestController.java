@@ -54,6 +54,11 @@ public class PostRestController {
         return postService.findByUsername(username);
     }
 
+    @GetMapping("/search")
+    public List<PostModelResponse> searchPostText(@RequestParam("text") String text) {
+        return postService.getPostWhereTextContainsAnyWord(text);
+    }
+
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public PostModelResponse update(@RequestBody @Valid PostDTO updatePostDTO) {
