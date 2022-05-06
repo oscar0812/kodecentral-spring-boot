@@ -28,12 +28,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests().antMatchers("/api/auth/*").permitAll()
-                //.anyRequest().authenticated()
-                .anyRequest().permitAll()
+                .antMatchers("/api/library").permitAll()
+                .antMatchers("/api/library/slug*").permitAll()
+                .antMatchers("/api/post/latest*").permitAll()
+                .antMatchers("/api/post/library*").permitAll()
+                .antMatchers("/api/post/slug*").permitAll()
+                .antMatchers("/api/post/search*").permitAll()
+                .antMatchers("/uploads/pfp/*").permitAll()
+                .anyRequest().authenticated()
+                //.anyRequest().permitAll()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.cors();
     }
 
     @Override
