@@ -8,16 +8,12 @@ import com.oscarrtorres.kodecentral.spring.boot.security.JwtUtil;
 import com.oscarrtorres.kodecentral.spring.boot.security.MyUserDetailsService;
 import com.oscarrtorres.kodecentral.spring.boot.security.MyUserPrincipal;
 import com.oscarrtorres.kodecentral.spring.boot.services.UserService;
-import org.springframework.data.annotation.CreatedBy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +30,9 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+
+    @Autowired
+    private AuditorAware<User> auditorAware;
 
     public AuthController(AuthenticationManager authenticationManager, MyUserDetailsService userDetailsService, JwtUtil jwtUtil, PasswordEncoder passwordEncoder, UserService userService) {
         this.authenticationManager = authenticationManager;
@@ -66,7 +65,7 @@ public class AuthController {
 
     @GetMapping("/current")
     public UserModelResponse getCurrentLoggedInUser() {
-        User user = userService.getCurrent();
-        return user == null? null : new UserModelResponse(user);
+        Optional<User> user = auditorAware.getCurrentAuditor();
+        return user.isEmpty() ? null : new UserModelResponse(user.get());
     }
 }

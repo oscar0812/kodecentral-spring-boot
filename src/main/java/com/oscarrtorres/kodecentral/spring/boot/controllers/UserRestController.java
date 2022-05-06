@@ -9,6 +9,7 @@ import com.oscarrtorres.kodecentral.spring.boot.repositories.UserRepository;
 import com.oscarrtorres.kodecentral.spring.boot.services.FileUploadService;
 import com.oscarrtorres.kodecentral.spring.boot.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,12 +24,12 @@ import java.util.Set;
 @RestController
 @RequestMapping("${spring.data.rest.basePath}/user")
 public class UserRestController {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private LibraryRepository libraryRepository;
+
     private final UserService userService;
     private final FileUploadService fileUploadService;
+
+    @Autowired
+    private AuditorAware<User> auditorAware;
 
     public UserRestController(UserService userService, FileUploadService fileUploadService) {
         this.userService = userService;
@@ -47,23 +48,25 @@ public class UserRestController {
 
     @PatchMapping
     public UserModelResponse update(@RequestBody User user) throws Exception{
-        User currentUser = userService.getCurrent();
-        if(currentUser == null)
+        Optional<User> currentUserOp = auditorAware.getCurrentAuditor();
+        if(currentUserOp.isEmpty())
             throw new AuthorizationException();
 
+        User currentUser = currentUserOp.get();
         currentUser.setBio(user.getBio());
         return userService.save(currentUser);
     }
 
     @PostMapping("/uploadProfilePicture")
     public UserModelResponse uploadImage(@RequestParam("imageFile")MultipartFile file) throws IOException {
-        User user = userService.getCurrent();
+        Optional<User> currentUserOp = auditorAware.getCurrentAuditor();
 
-        if(user == null) {
+        if(currentUserOp.isEmpty()) {
             throw new AuthorizationException();
         } else if (!file.isEmpty()){
             String uploadDir = "uploads/pfp";
 
+            User user = currentUserOp.get();
             user.setProfilePicture(uploadDir + "/" + user.getUsername() + ".png");
             UserModelResponse savedUser = userService.save(user);
 
